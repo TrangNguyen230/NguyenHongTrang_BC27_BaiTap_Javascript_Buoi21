@@ -22,7 +22,7 @@ Staff.prototype.salaryCal = function () {
       return this.salary;
       break;
     default:
-      return 0
+      return 0;
   }
 };
 
@@ -58,14 +58,12 @@ function init() {
       staff.date,
       staff.salary,
       staff.position,
-      staff.workingHour,
+      staff.workingHour
     );
   }
   // Hiển thị ra giao diện
   display(staffs);
 }
-
-
 // Hàm thêm thông tin nhân viên
 function addStaff() {
   // DOM giá trị nhập
@@ -77,6 +75,8 @@ function addStaff() {
   var salary = +document.getElementById("luongCB").value;
   var position = document.getElementById("chucvu").value;
   var workingHour = +document.getElementById("gioLam").value;
+  // Kiểm tra nội dung input có hợp lệ không
+  var isValid = validation();
 
   // Khởi tạo object
   var staff = new Staff(
@@ -94,7 +94,7 @@ function addStaff() {
   staffs.push(staff);
 
   // Lưu xuống localstorage
-  localStorage.setItem("staffs", JSON.stringify(staffs))
+  localStorage.setItem("staffs", JSON.stringify(staffs));
   display(staffs);
   resetForm();
 }
@@ -149,8 +149,8 @@ function resetForm() {
   document.getElementById("chucvu").value = "Chọn chức vụ";
   document.getElementById("gioLam").value = "";
 
-  document.getElementById("tknv").disabled = false
-  document.getElementById("btnThemNV").disabled = false
+  document.getElementById("tknv").disabled = false;
+  document.getElementById("btnThemNV").disabled = false;
 }
 
 // Hàm lấy giá trị ngày hôm nay
@@ -187,8 +187,8 @@ function selectStaff(staffAccount) {
   document.getElementById("chucvu").value = staff.position;
   document.getElementById("gioLam").value = staff.workingHour;
 
-  document.getElementById("tknv").disabled = true
-  document.getElementById("btnThemNV").disabled = true
+  document.getElementById("tknv").disabled = true;
+  document.getElementById("btnThemNV").disabled = true;
 }
 
 // Hàm tìm nhân viên theo tài khoản
@@ -204,7 +204,6 @@ function findStaff(staffAccount) {
   return index;
 }
 
-
 // Hàm update nhân viên lên giao diện
 function updateStaff() {
   // DOM lấy giá trị
@@ -217,6 +216,7 @@ function updateStaff() {
   var position = document.getElementById("chucvu").value;
   var workingHour = +document.getElementById("gioLam").value;
 
+  var isValid = validation()
   // Khởi tạo object
   var staff = new Staff(
     account,
@@ -228,24 +228,23 @@ function updateStaff() {
     position,
     workingHour
   );
-
+    
   // Cập nhật thông tin staff đã update
   // Tìm nhân viên update
   var index = findStaff(staff.account);
   // Cập nhật
   staffs[index] = staff;
 
-  document.getElementById("tknv").disabled = true
-  document.getElementById("btnThemNV").disabled = true
+  document.getElementById("tknv").disabled = true;
+  document.getElementById("btnThemNV").disabled = true;
 
   // Cập nhật lên localstorage
-  localStorage.setItem("staffs", JSON.stringify(staffs))
+  localStorage.setItem("staffs", JSON.stringify(staffs));
 
   // Hiển thị lên giao diện
   display(staffs);
   resetForm();
-}
-
+  }
 
 // Hàm xóa nhân viên
 function deleteStaff(staffAccount) {
@@ -257,9 +256,149 @@ function deleteStaff(staffAccount) {
     staffs.splice(index, 1);
   }
 
- // Cập nhật lên localstorage
-  localStorage.setItem("staffs", JSON.stringify(staffs))
+  // Cập nhật lên localstorage
+  localStorage.setItem("staffs", JSON.stringify(staffs));
 
   // Hiển thị lại giao diện
   display(staffs);
+}
+
+// Hàm điều kiện validation
+function validation() {
+  var account = document.getElementById("tknv").value;
+  var name = document.getElementById("name").value;
+  var mail = document.getElementById("email").value;
+  var pass = document.getElementById("password").value;
+  var date = document.getElementById("datepicker").value;
+  var salary = +document.getElementById("luongCB").value;
+  var position = document.getElementById("chucvu").value;
+  var workingHour = +document.getElementById("gioLam").value;
+
+  document.getElementById("tbTKNV").style.display = "block";
+  document.getElementById("tbTen").style.display = "block";
+  document.getElementById("tbEmail").style.display = "block";
+  document.getElementById("tbMatKhau").style.display = "block";
+  document.getElementById("tbLuongCB").style.display = "block";
+  document.getElementById("tbChucVu").style.display = "block";
+  document.getElementById("tbGiolam").style.display = "block";
+  var isValid = true;
+
+  // Kiểm tra input tài khoản
+  var accountTest = new RegExp("^[A-Za-z0-9]{4,6}$");
+  if (!isRequired(account)) {
+    isValid = false;
+    document.getElementById("tbTKNV").innerHTML =
+      "Tài khoản không được để trống";
+  } else if (!accountTest.test(account)) {
+    isValid = false;
+    document.getElementById("tbTKNV").innerHTML = "Tài khoản tối đa 4-6 ký số";
+  }
+
+  // Kiểm tra input tên nhân viên
+  var nameTest = new RegExp("^[A-Za-z] +$");
+  if (!isRequired(name)) {
+    isValid = false;
+    document.getElementById("tbTen").innerHTML = "Tên không được để trống";
+  } else if (!nameTest.test(name)) {
+    isValid = false;
+    document.getElementById("tbTen").innerHTML =
+      "Tên không được bao gồm số hay các ký tự đặc biệt";
+  }
+
+  // Kiểm tra input email
+  var mailTest = new RegExp("[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,}$");
+  if (!isRequired(mail)) {
+    isValid = false;
+    document.getElementById("tbEmail").innerHTML = "Email không được để trống";
+  } else if (!mailTest.test(mail)) {
+    isValid = false;
+    document.getElementById("tbEmail").innerHTML = "Email không đúng định dạng";
+  }
+
+  // Kiểm tra input mật khẩu
+  var passTest = new RegExp(
+    "^(?=.*[a-z])(?=.*[A-Z])(?=.*d)(?=.*[@$!%*?&])[A-Za-zd@$!%*?&]{6,10}$"
+  );
+  if (!isRequired(pass)) {
+    isValid = false;
+    document.getElementById("tbMatKhau").innerHTML =
+      "Mật khẩu không được để trống";
+  } else if (!passTest.test(pass)) {
+    isValid = false;
+    document.getElementById("tbMatKhau").innerHTML =
+      "Mật Khẩu phải từ 6-10 ký tự (chứa ít nhất 1 ký tự số, 1 ký tự in hoa, 1 ký tự đặc biệt)";
+  }
+
+  // Kiểm tra input lương
+  if (!isRequired(salary)) {
+    isValid = false;
+    document.getElementById("tbLuongCB").innerHTML =
+      "Lương không được để trống";
+  } else if (salary < 1000000 || salary > 20000000) {
+    isValid = false;
+    document.getElementById("tbLuongCB").innerHTML =
+      "Lương cơ bản chỉ trong khoảng 1.000.000 đến 20.000.000";
+  }
+
+  // Kiểm tra input chức vụ
+  if (!isRequired(position)) {
+    isValid = false;
+    document.getElementById("tbChucVu").innerHTML = "Chức vụ không hợp lệ";
+  }
+
+  // Kiểm tra input số giờ làm
+  if (!isRequired(workingHour)) {
+    isValid = false;
+    document.getElementById("tbGiolam").innerHTML =
+      "Giờ làm không được để trống";
+  } else if (workingHour < 80 || workingHour > 200) {
+    isValid = false;
+    document.getElementById("tbGiolam").innerHTML =
+      "Số giờ làm chỉ trong khoảng 80 giờ - 200 giờ";
+  }
+
+  return isValid;
+}
+
+// Các hàm kiểm tra xem input có rỗng hay không
+function isRequired(value) {
+  if (!value) {
+    return false;
+  }
+  return true;
+}
+
+// Hàm tìm kiếm nhân viên theo loại
+function searchStaff() {
+  var searchValue = document.getElementById("searchName").value;
+  searchValue = searchValue.toLowerCase();
+
+  var newStaffs = [];
+  for (var i = 0; i < staffs.length; i++) {
+    var staff = staffs[i];
+    switch (searchValue) {
+      case "xuất sắc":
+        if (staff.workingHour >= 192) {
+          newStaffs.push(staff);
+        }
+        break;
+      case "giỏi":
+        if (staff.workingHour >= 176) {
+          newStaffs.push(staff);
+        }
+        break;
+      case "khá":
+        if (staff.workingHour >= 160) {
+          newStaffs.push(staff);
+        }
+        break;
+      case "trung bình":
+        if (staff.workingHour < 160) {
+          newStaffs.push(staff);
+        }
+        break;
+    }
+  }
+ 
+  display(newStaffs)
 }
