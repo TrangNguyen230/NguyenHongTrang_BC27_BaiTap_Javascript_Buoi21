@@ -75,6 +75,7 @@ function addStaff() {
   var salary = +document.getElementById("luongCB").value;
   var position = document.getElementById("chucvu").value;
   var workingHour = +document.getElementById("gioLam").value;
+ 
   // Kiểm tra nội dung input có hợp lệ không
   var isValid = validation();
 
@@ -383,12 +384,12 @@ function searchStaff() {
         }
         break;
       case "giỏi":
-        if (staff.workingHour >= 176) {
+        if (staff.workingHour >= 176 && staff.workingHour < 192) {
           newStaffs.push(staff);
         }
         break;
       case "khá":
-        if (staff.workingHour >= 160) {
+        if (staff.workingHour >= 160 && staff.workingHour < 176) {
           newStaffs.push(staff);
         }
         break;
